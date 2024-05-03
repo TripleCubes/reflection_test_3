@@ -65,7 +65,7 @@
 			font-size: small;
 		}
 
-		.copy_all_btn {
+		.copy_btn {
 			margin-left: 20px;
 		}
 
@@ -127,8 +127,11 @@
 				        onclick="output_click()">
 					Output
 				</button>
-				<button class="copy_all_btn">Copy all</button>
-				<span class="copied_text">Copied</span>
+				<button class="copy_btn"
+				        onclick="copy_click()">
+					Copy compiled
+				</button>
+				<span class="copied_text"></span>
 			</div>
 			<div class="middle_bar">
 				<span class="right_label">Compiled</span>
@@ -196,6 +199,25 @@
 			right_label.innerHTML = 'Output';
 		}
 
+		function copy_click() {
+			let compiled = document.querySelector('.compiled');
+			navigator.clipboard.writeText(compiled.innerHTML)
+			.then(() => {
+				let copied_text=document.querySelector('.copied_text');
+				copied_text.innerHTML = 'Copied';
+			});
+
+			setTimeout(() => {
+				let copied_text=document.querySelector('.copied_text');
+				copied_text.innerHTML = '';
+			}, 1000);
+		}
+
+		function clear_click() {
+			let input = document.querySelector('.input');
+			input.value = '';
+		}
+
 		console_log = console.log;
 		console.log = function(str) {
 			console_log(str);
@@ -244,9 +266,11 @@
 			let compiled = document.querySelector('.compiled');
 			if (result_num == 1) {
 				compiled.innerHTML = result_code;
+				output_click();
 			}
 			else {
 				compiled.innerHTML = error_str;
+				compiled_click();
 			}
 
 			return result_code;
