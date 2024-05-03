@@ -46,6 +46,14 @@
 			height: 30px;
 		}
 
+		.middle_bar {
+			display: block;
+			width: 100%;
+			margin-top: 5px;
+			height: 23px;
+			font-size: small;
+		}
+
 		.compile_run_btn {
 		}
 
@@ -102,6 +110,9 @@
 					Clear
 				</button>
 			</div>
+			<div class="middle_bar">
+				<span>main.test3</span>
+			</div>
 			<textarea class="input"></textarea>
 		</div>
 		<div class="right">
@@ -117,12 +128,16 @@
 				<button class="copy_all_btn">Copy all</button>
 				<span class="copied_text">Copied</span>
 			</div>
+			<div class="middle_bar">
+				<span class="right_label">Compiled</span>
+			</div>
 			<div class="compiled"></div>
 			<div class="output" style="display: none">AAAA</div>
 		</div>
 	</div>
 
 	<script src="test3.js"></script>
+	<script src="fengari-web.js" type="text/javascript"></script>
 	<script>
 		let test3_gen = Module.cwrap('test3_gen', 'number',
 									 ['string']);
@@ -143,15 +158,19 @@
 		function compiled_click() {
 			let compiled = document.querySelector('.compiled');
 			let output = document.querySelector('.output');
+			let right_label = document.querySelector('.right_label');
 			compiled.style.display = 'block';
 			output.style.display = 'none';
+			right_label.innerHTML = 'Compiled';
 		}
 
 		function output_click() {
 			let compiled = document.querySelector('.compiled');
 			let output = document.querySelector('.output');
+			let right_label = document.querySelector('.right_label');
 			compiled.style.display = 'none';
 			output.style.display = 'block';
+			right_label.innerHTML = 'Output';
 		}
 
 		function compile(str) {
