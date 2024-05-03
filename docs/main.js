@@ -11,6 +11,12 @@ let get_error_str = Module.cwrap(
 
 function init() {
 	let input = document.querySelector('.input');
+	let saved_code = localStorage.getItem('input_code');
+	if (saved_code != null) {
+		input.value = saved_code;
+	}
+
+
 	input.addEventListener('keydown', (e) => {
 		if (e.key == 'Tab') {
 			e.preventDefault();
@@ -25,6 +31,12 @@ function init() {
 			input.selectionStart = start + 1;
 			input.selectionEnd = start + 1;
 		}
+	});
+
+
+	window.addEventListener('beforeunload', (e) => {
+		let input = document.querySelector('.input');
+		localStorage.setItem('input_code', input.value);
 	});
 }
 
