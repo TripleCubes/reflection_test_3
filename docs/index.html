@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		body {
+			margin: 0px;
+			width: 100vw;
+			height: 100vh;
+			overflow: hidden;
+			font-family: sans-serif;
+		}
+
+		.content {
+			position: relative;
+			left: 50vw;
+			transform: translateX(-50%);
+			width: calc(100% - 20px);
+			max-width: 1160px;
+			height: calc(100% - 20px - 30px);
+			display: flex;
+			padding: 10px;
+			gap: 10px;
+		}
+
+		.nav {
+			position: relative;
+			left: 50vw;
+			transform: translateX(-50%);
+			width: calc(100% - 20px);
+			max-width: 1160px;
+			margin-top: 10px;
+			height: 20px;
+		}
+
+		.left, .right {
+			display: inline-block;
+			flex-grow: 1;
+			flex-shrink: 0;
+			flex-basis: 0;
+			min-width: calc(50% - 15px);
+		}
+
+		.top_bar {
+			display: block;
+			width: 100%;
+			height: 30px;
+		}
+
+		.compile_run_btn {
+		}
+
+		.clear_btn {
+			margin-left: 20px;
+		}
+
+		.copied_text {
+			font-size: small;
+		}
+
+		.copy_all_btn {
+			margin-left: 20px;
+		}
+
+		.input, .compiled, .output {
+			width: calc(100% - 8px);
+			height: calc(100% - 30px - 8px);
+		}
+
+		.input {
+			overflow: auto;
+			white-space: pre;
+			resize: none;
+			
+			margin: 0px;
+		}
+
+		.compiled, .output {
+			font-family: monospace;
+			overflow: auto;
+			white-space: pre;
+			border: 1px solid #8C8C8C;
+			border-radius: 2px;
+
+			padding: 2px;
+			padding-top: 3px;
+		}
+	</style>
+</head>
+<body>
+	<div class="nav">
+		<a>Syntax and stuff</a>
+	</div>
+	<div class="content">
+		<div class="left">
+			<div class="top_bar">
+				<button class="compile_run_btn"
+				        onclick="compile_run_click()">
+					Compile and run
+				</button>
+				<button class="clear_btn"
+				        onclick="clear_click()">
+					Clear
+				</button>
+			</div>
+			<textarea class="input"></textarea>
+		</div>
+		<div class="right">
+			<div class="top_bar">
+				<button class="compiled_btn"
+				        onclick="compiled_click()">
+					Compiled
+				</button>
+				<button class="output_btn"
+				        onclick="output_click()">
+					Output
+				</button>
+				<button class="copy_all_btn">Copy all</button>
+				<span class="copied_text">Copied</span>
+			</div>
+			<div class="compiled"></div>
+			<div class="output" style="display: none">AAAA</div>
+		</div>
+	</div>
+
+	<script src="test3.js"></script>
+	<script>
+		let test3_gen = Module.cwrap('test3_gen', 'number',
+									 ['string']);
+		let get_result_code_sz = Module.cwrap(
+			'get_result_code_sz', 'number');
+		let get_error_str_sz = Module.cwrap(
+			'get_error_str_sz', 'number');
+		let get_result_code = Module.cwrap(
+			'get_result_code', null, ['number']);
+		let get_error_str = Module.cwrap(
+			'get_error_str', null, ['number']);
+
+		function compile_run_click() {
+			let input = document.querySelector('.input');
+			compile(input.value);
+		}
+
+		function compiled_click() {
+			let compiled = document.querySelector('.compiled');
+			let output = document.querySelector('.output');
+			compiled.style.display = 'block';
+			output.style.display = 'none';
+		}
+
+		function output_click() {
+			let compiled = document.querySelector('.compiled');
+			let output = document.querySelector('.output');
+			compiled.style.display = 'none';
+			output.style.display = 'block';
+		}
+
+		function compile(str) {
+			let result_num = test3_gen(str);
+			
+			let result_code_sz = get_result_code_sz();
+			let error_str_sz = get_error_str_sz();
+
+			let result_code = '';
+			let error_str = '';
+
+			for (let i = 0; i < result_code_sz + 1; i++) {
+				result_code += ' ';
+			}
+			for (let i = 0; i < error_str_sz + 1; i++) {
+				error_str += ' ';
+			}
+
+			let result_code_ptr
+				= Module.stringToNewUTF8(result_code);
+			let error_str_ptr
+				= Module.stringToNewUTF8(error_str);
+
+			get_result_code(result_code_ptr);
+			get_error_str(error_str_ptr);
+
+			result_code = Module.UTF8ToString(result_code_ptr);
+			error_str = Module.UTF8ToString(error_str_ptr);
+
+			Module._free(result_code_ptr);
+			Module._free(error_str_ptr);
+
+			let compiled = document.querySelector('.compiled');
+			if (result_num == 1) {
+				compiled.innerHTML = result_code;
+			}
+			else {
+				compiled.innerHTML = error_str;
+			}
+		}
+	</script>
+</body>
+</html>
