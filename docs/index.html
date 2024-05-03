@@ -207,7 +207,7 @@
 			let compiled_code = compile(str);
 
 			if (compiled_code != '') {
-				run_compiled(str);
+				run_compiled(compiled_code);
 			}
 		}
 
@@ -255,7 +255,14 @@
 		function run_compiled(str) {
 			let output = document.querySelector('.output');
 			output.innerHTML = '';
-			let func = fengari.load(str);
+
+			let test_code = 'function test()\n'
+				+ str
+				+ '\nend\n'
+				+ 'success, err = pcall(test)\n'
+				+ 'if not success then print(err) end';
+
+			let func = fengari.load(test_code);
 			func();
 		}
 	</script>
