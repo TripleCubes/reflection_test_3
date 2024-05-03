@@ -78,6 +78,7 @@
 			overflow: auto;
 			white-space: pre;
 			resize: none;
+			tab-size: 4;
 			
 			margin: 0px;
 		}
@@ -88,6 +89,7 @@
 			white-space: pre;
 			border: 1px solid #8C8C8C;
 			border-radius: 2px;
+			tab-size: 4;
 
 			padding: 2px;
 			padding-top: 3px;
@@ -132,7 +134,7 @@
 				<span class="right_label">Compiled</span>
 			</div>
 			<div class="compiled"></div>
-			<div class="output" style="display: none">AAAA</div>
+			<div class="output" style="display: none"></div>
 		</div>
 	</div>
 
@@ -150,9 +152,30 @@
 		let get_error_str = Module.cwrap(
 			'get_error_str', null, ['number']);
 
+		function init() {
+			let input = document.querySelector('.input');
+			input.addEventListener('keydown', (e) => {
+				if (e.key == 'Tab') {
+					e.preventDefault();
+					
+					let start = input.selectionStart;
+					let end = input.selectionEnd;
+
+					input.value
+					= input.value.substring(0, start)
+					+ '\t' + input.value.substring(end);
+
+					this.selectionStart = start + 1;
+					this.selectionEnd = start + 1;
+				}
+			});
+		}
+
+		init();
+
 		function compile_run_click() {
 			let input = document.querySelector('.input');
-			compile(input.value);
+			compile_and_run(input.value);
 		}
 
 		function compiled_click() {
@@ -171,6 +194,21 @@
 			compiled.style.display = 'none';
 			output.style.display = 'block';
 			right_label.innerHTML = 'Output';
+		}
+
+		console_log = console.log;
+		console.log = function(str) {
+			console_log(str);
+			let output = document.querySelector('.output');
+			output.innerHTML += str + '\n';
+		}
+
+		function compile_and_run(str) {
+			let compiled_code = compile(str);
+
+			if (compiled_code != '') {
+				run_compiled(str);
+			}
 		}
 
 		function compile(str) {
@@ -210,6 +248,15 @@
 			else {
 				compiled.innerHTML = error_str;
 			}
+
+			return result_code;
+		}
+
+		function run_compiled(str) {
+			let output = document.querySelector('.output');
+			output.innerHTML = '';
+			let func = fengari.load(str);
+			func();
 		}
 	</script>
 </body>
