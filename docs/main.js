@@ -74,7 +74,8 @@ function output_click() {
 
 function copy_click() {
 	let compiled = document.querySelector('.compiled');
-	navigator.clipboard.writeText(compiled.innerHTML)
+	navigator.clipboard.writeText(compiled.innerHTML
+	.replaceAll('&gt;', '>').replaceAll('&lt;', '<'))
 	.then(() => {
 		let copied_text=document.querySelector('.copied_text');
 		copied_text.innerHTML = 'Copied';
