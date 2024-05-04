@@ -33,6 +33,11 @@ a, a:visited {
 	height: 20px;
 }
 
+.nav > a {
+	margin-right: 8px;
+	white-space: nowrap;
+}
+
 .left, .right {
 	display: inline-block;
 	flex-grow: 1;
@@ -102,6 +107,15 @@ a, a:visited {
 @media only screen and (max-width: 630px) {
 	body {
 		overflow-y: auto;
+	}
+
+	.nav {
+		height: auto;
+	}
+
+	.nav > a {
+		margin-bottom: 6px;
+		display: inline-block;
 	}
 
 	.content {
