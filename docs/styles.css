@@ -57,16 +57,20 @@ a, a:visited {
 .compile_run_btn {
 }
 
+.copy_btn {
+	margin-left: 20px;
+}
+
 .clear_btn {
 	margin-left: 20px;
 }
 
-.copied_text {
-	font-size: small;
+.saved_text {
+	margin-left: 10px;
 }
 
-.copy_btn {
-	margin-left: 20px;
+.copied_text {
+	font-size: small;
 }
 
 .input, .compiled, .output {

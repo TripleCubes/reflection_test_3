@@ -31,20 +31,27 @@ function init() {
 			input.selectionStart = start + 1;
 			input.selectionEnd = start + 1;
 		}
-	});
-
-
-	window.addEventListener('beforeunload', (e) => {
-		let input = document.querySelector('.input');
-		localStorage.setItem('input_code', input.value);
+	
+		let saved_text = document.querySelector('.saved_text');
+		saved_text.innerHTML = 'edited';
 	});
 }
 
 init();
 
+function save_input() {
+	let input = document.querySelector('.input');
+	localStorage.setItem('input_code', input.value);
+
+	let saved_text = document.querySelector('.saved_text');
+	saved_text.innerHTML = 'saved';
+}
+
 function compile_run_click() {
 	let input = document.querySelector('.input');
 	compile_and_run(input.value);
+
+	save_input();
 }
 
 function compiled_click() {
